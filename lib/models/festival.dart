@@ -24,8 +24,9 @@ class Festival {
         endDate = DateFormat("yyyy-MM-ddTHH:mm:ss.SSSZ").parse(json["endDate"]),
         createdAt = DateFormat("yyyy-MM-ddTHH:mm:ss.SSSZ").parse(json["createdAt"]),
         updatedAt = DateFormat("yyyy-MM-ddTHH:mm:ss.SSSZ").parse(json["updatedAt"]),
-        listEvents = List<Event>.from(jsonDecode(json['events']).
-        map((i) => Event.fromJson(i)));
+        listEvents = null;
+        // List<Event>.from(jsonDecode(json['events'])!.
+        // map((i) => Event.fromJson(i)));
 
   Map<String, dynamic> toJson() => {
     'id': id,

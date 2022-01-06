@@ -4,7 +4,6 @@ import 'dart:developer';
 
 import 'package:app_festival_flutter/models/festival.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 
@@ -18,10 +17,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  TextEditingController tecFestival = TextEditingController();
-
-  StreamController<List<Festival>> streamControllerFestivals =
-      StreamController();
+  StreamController<List<Festival>> streamControllerFestivals = StreamController();
 
   @override
   void initState() {
@@ -93,6 +89,7 @@ class _HomePageState extends State<HomePage> {
           },
           onError: (error, stacktrace) =>
               log('Error getJWT' + error.toString()),
+
         );
   }
 
@@ -100,7 +97,9 @@ class _HomePageState extends State<HomePage> {
     if (response.statusCode == 200) {
       String res = response.body;
       dynamic mapRes = jsonDecode(res);
+      log('Festivals : $mapRes');
       List<Festival> listFestivals = List.from(mapRes.map((x) => Festival.fromJson(x)));
+      log('$listFestivals');
       streamControllerFestivals.sink.add(listFestivals);
     } else {
       log("${response.statusCode} ${response.reasonPhrase}");
