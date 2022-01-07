@@ -9,12 +9,10 @@ class Festival {
   String description;
   DateTime startDate;
   DateTime endDate;
-  DateTime createdAt;
-  DateTime updatedAt;
   // Un festival à plusieurs events
   List<Event>? listEvents;
 
-  Festival(this.id, this.name, this.description, this.startDate, this.endDate, this.createdAt, this.updatedAt, this.listEvents);
+  Festival(this.id, this.name, this.description, this.startDate, this.endDate, this.listEvents);
 
   Festival.fromJson(Map<String, dynamic> json)
       : id = json['id'],
@@ -22,8 +20,6 @@ class Festival {
         description = json['description'],
         startDate = DateFormat("yyyy-MM-ddTHH:mm:ss.SSSZ").parse(json["startDate"]),
         endDate = DateFormat("yyyy-MM-ddTHH:mm:ss.SSSZ").parse(json["endDate"]),
-        createdAt = DateFormat("yyyy-MM-ddTHH:mm:ss.SSSZ").parse(json["createdAt"]),
-        updatedAt = DateFormat("yyyy-MM-ddTHH:mm:ss.SSSZ").parse(json["updatedAt"]),
         listEvents = null;
         // List<Event>.from(jsonDecode(json['events'])!.
         // map((i) => Event.fromJson(i)));
@@ -34,7 +30,5 @@ class Festival {
     'description': description,
     'startDate': startDate,
     'endDate': endDate,
-    'createdAt': createdAt,
-    'updatedAt': updatedAt,
   };
 }

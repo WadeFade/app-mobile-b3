@@ -23,12 +23,12 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Connexion'),
-        actions: [
-          IconButton(
-            onPressed: () => Navigator.of(context).pushNamed("/home"),
-            icon: const Icon(Icons.home),
-          ),
-        ],
+        // actions: [
+        //   IconButton(
+        //     onPressed: () => Navigator.of(context).pushNamed("/home"),
+        //     icon: const Icon(Icons.home),
+        //   ),
+        // ],
       ),
       body: Center(
         child: Padding(
@@ -36,7 +36,7 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             children: [
               // const Spacer(),
-              // Image.asset('assets/image/loupp.png',
+              // Image.asset('assets/icon/icon.png',
               //     width: 100, height: 100, color: Colors.white),
               const Spacer(),
               TextFormField(
@@ -81,7 +81,7 @@ class _LoginPageState extends State<LoginPage> {
     String password = tecPassword.text.trim();
 
     http.Response response = await http.post(
-        Uri.parse("http://192.168.0.39:8080/api/auth/signin"),
+        Uri.parse("${ConstStorage.BASE_URL}auth/signin"),
         body: {'email': email, 'password': password});
 
     if (response.statusCode == 200) {

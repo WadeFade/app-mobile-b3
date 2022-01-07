@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:app_festival_flutter/const_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
@@ -23,12 +24,12 @@ class _RegisterPageState extends State<RegisterPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('S\'inscrire'),
-        actions: [
-          IconButton(
-            onPressed: () => Navigator.of(context).pushNamed("/home"),
-            icon: const Icon(Icons.home),
-          ),
-        ],
+        // actions: [
+        //   IconButton(
+        //     onPressed: () => Navigator.of(context).pushNamed("/home"),
+        //     icon: const Icon(Icons.home),
+        //   ),
+        // ],
       ),
       body: Center(
         child: Padding(
@@ -96,7 +97,7 @@ class _RegisterPageState extends State<RegisterPage> {
     String password = tecPassword.text.trim();
 
     http.Response response = await http.post(
-        Uri.parse("http://192.168.0.39:8080/api/auth/signup"),
+        Uri.parse("${ConstStorage.BASE_URL}auth/signup"),
         body: {'firstname': firstname, 'lastname': lastname, 'email': email, 'password': password});
 
     if (response.statusCode == 200) {

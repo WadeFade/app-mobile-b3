@@ -1,3 +1,4 @@
+import 'package:app_festival_flutter/pages/festival_page.dart';
 import 'package:flutter/material.dart';
 
 import 'pages/home_page.dart';
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
         '/register': (BuildContext context) => const RegisterPage(),
         '/login': (BuildContext context) => const LoginPage(),
         '/home': (BuildContext context) => const HomePage(),
+        '/festival': (BuildContext context) => const FestivalPage(),
       },
     );
   }
