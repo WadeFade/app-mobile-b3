@@ -39,10 +39,21 @@ class _FestivalPageState extends State<FestivalPage> {
                   ),
                 ),
               ),
+              Text('${DateFormat('dd/MM/yyyy').format(args.startDate)} - ${DateFormat('dd/MM/yyyy').format(args.endDate)}'),
               Padding(
                 padding: const EdgeInsets.fromLTRB(25.0, 16.0, 25.0, 0.0),
                 child: Text(
                   "${args.description}",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16.0,
+                  ),
+                  textAlign: TextAlign.start,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(25.0, 16.0, 25.0, 0.0),
+                child: Text('Programmation :',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 16.0,
