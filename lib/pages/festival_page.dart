@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:app_festival_flutter/const_storage.dart';
@@ -17,11 +18,27 @@ class FestivalPage extends StatefulWidget {
 }
 
 class _FestivalPageState extends State<FestivalPage> {
-  StreamController<List<Event>> streamControllerFestivals = StreamController();
+  StreamController<List<Event>> streamControllerEvents = StreamController();
+  dynamic args;
+  bool flag = false;
+
+  @override
+  void initState() {
+    super.initState();
+    flag = false;
+
+  }
 
   @override
   Widget build(BuildContext context) {
-    final args = ModalRoute.of(context)!.settings.arguments as Festival;
+    if (flag != true) {
+      args = ModalRoute.of(context)!.settings.arguments as Festival;
+      flag = true;
+      if (args != null) {
+        _getFestivalInfo(args);
+      }
+    }
+
     return Scaffold(
       appBar: AppBar(),
       body: Center(
@@ -63,7 +80,7 @@ class _FestivalPageState extends State<FestivalPage> {
               ),
               Expanded(
                 child: StreamBuilder<List<Event>>(
-                    // stream: streamControllerEvents.stream,
+                    stream: streamControllerEvents.stream,
                     builder: (context, snapshot) {
                       switch (snapshot.connectionState) {
                         case ConnectionState.active:
@@ -91,14 +108,27 @@ class _FestivalPageState extends State<FestivalPage> {
   _getFestivalInfo(Festival args) async {
     String? jwt = await FlutterSecureStorage().read(key: ConstStorage.KEY_JWT);
     http.Response response = await http.get(
-      Uri.parse('${ConstStorage.BASE_URL}festival/${args.id}'),
+      Uri.parse('${ConstStorage.BASE_URL}events/festival/${args.id}'),
       headers: {'Authorization': 'Bearer $jwt'},
     );
     if (response.statusCode == 200) {
       log("ok");
+      _analyzeResponseEvents(response);
     } else {
       log("Error ${response.statusCode} ${response.body}");
       Navigator.pop(context);
+    }
+  }
+
+  void _analyzeResponseEvents(http.Response response) {
+    if (response.statusCode == 200) {
+      String res = response.body;
+      dynamic mapRes = jsonDecode(res);
+      List<Event> listEvents = List.from(mapRes.map((x) => Event.fromJson(x)));
+      streamControllerEvents.sink.add(listEvents);
+    } else {
+      log("${response.statusCode} ${response.reasonPhrase}");
+      Navigator.pushNamed(context, "/login");
     }
   }
 
@@ -111,8 +141,8 @@ class _FestivalPageState extends State<FestivalPage> {
             title: Text(event.name),
             subtitle: Column(
               children: [
-                Text('Du : ${DateFormat('dd/MM/yyyy').format(event.startDate)}'),
-                Text('Au : ${DateFormat('dd/MM/yyyy').format(event.endDate)}'),
+                Text('Du : ${DateFormat('dd/MM/yyyy - HH:mm').format(event.startDate)}'),
+                Text('Au : ${DateFormat('dd/MM/yyyy - HH:mm').format(event.endDate)}'),
               ],
               crossAxisAlignment: CrossAxisAlignment.start,
             ),
