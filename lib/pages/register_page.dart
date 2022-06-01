@@ -4,6 +4,9 @@ import 'package:app_festival_flutter/const_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:http/http.dart' as http;
+import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
+
+import 'login_page.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key}) : super(key: key);
@@ -74,7 +77,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   OutlinedButton(
-                    onPressed: () => Navigator.of(context).pushNamed("/login"),
+                    onPressed: () => Navigator.pushNamed(context, "/login"),
                     child: const Text('SE CONNECTER'),
                   ),
                   ElevatedButton(

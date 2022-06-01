@@ -2,10 +2,12 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:app_festival_flutter/const_storage.dart';
+import 'package:app_festival_flutter/pages/register_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -60,7 +62,11 @@ class _LoginPageState extends State<LoginPage> {
                 children: [
                   OutlinedButton(
                     onPressed: () =>
-                        Navigator.of(context).pushNamed("/register"),
+                        pushDynamicScreen(
+                          context,
+                          screen: RegisterPage(),
+                          withNavBar: false, // OPTIONAL VALUE. True by default.
+                        ),
                     child: const Text('S\'INSCRIRE'),
                   ),
                   ElevatedButton(
@@ -91,7 +97,7 @@ class _LoginPageState extends State<LoginPage> {
       String jwt = jsonDecode(response.body)["accessToken"];
       const FlutterSecureStorage()
           .write(key: ConstStorage.KEY_JWT, value: jwt)
-          .then((value) => Navigator.of(context).pushNamed("/home"),
+          .then((value) => Navigator.of(context).popUntil(ModalRoute.withName("Home")),
           onError: (_, var1) => log("Impossible d'écrire le token JWT."));
     } else {
       log("Error : ${response.statusCode} : ${response.body}");

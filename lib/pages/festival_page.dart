@@ -11,7 +11,8 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 class FestivalPage extends StatefulWidget {
-  const FestivalPage({Key? key}) : super(key: key);
+  final Festival festival;
+  const FestivalPage(this.festival, {Key? key}) : super(key: key);
 
   @override
   _FestivalPageState createState() => _FestivalPageState();
@@ -19,26 +20,15 @@ class FestivalPage extends StatefulWidget {
 
 class _FestivalPageState extends State<FestivalPage> {
   StreamController<List<Event>> streamControllerEvents = StreamController();
-  dynamic args;
-  bool flag = false;
 
   @override
   void initState() {
     super.initState();
-    flag = false;
-
+    _getFestivalInfo(widget.festival);
   }
 
   @override
   Widget build(BuildContext context) {
-    if (flag != true) {
-      args = ModalRoute.of(context)!.settings.arguments as Festival;
-      flag = true;
-      if (args != null) {
-        _getFestivalInfo(args);
-      }
-    }
-
     return Scaffold(
       appBar: AppBar(),
       body: Center(
@@ -49,18 +39,19 @@ class _FestivalPageState extends State<FestivalPage> {
               Padding(
                 padding: const EdgeInsets.all(25.0),
                 child: Text(
-                  "${args.name}",
+                  "${widget.festival.name}",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 36,
                   ),
                 ),
               ),
-              Text('${DateFormat('dd/MM/yyyy').format(args.startDate)} - ${DateFormat('dd/MM/yyyy').format(args.endDate)}'),
+              Text(
+                  '${DateFormat('dd/MM/yyyy').format(widget.festival.startDate)} - ${DateFormat('dd/MM/yyyy').format(widget.festival.endDate)}'),
               Padding(
                 padding: const EdgeInsets.fromLTRB(25.0, 16.0, 25.0, 0.0),
                 child: Text(
-                  "${args.description}",
+                  "${widget.festival.description}",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 16.0,
@@ -70,7 +61,8 @@ class _FestivalPageState extends State<FestivalPage> {
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(25.0, 16.0, 25.0, 0.0),
-                child: Text('Programmation :',
+                child: Text(
+                  'Programmation :',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 16.0,
@@ -91,9 +83,11 @@ class _FestivalPageState extends State<FestivalPage> {
                                   _buildListElement(snapshot.data![index]),
                             );
                           }
-                          return const Center(child: CircularProgressIndicator());
+                          return const Center(
+                              child: CircularProgressIndicator());
                         default:
-                          return const Center(child: CircularProgressIndicator());
+                          return const Center(
+                              child: CircularProgressIndicator());
                       }
                     }),
               ),
@@ -105,10 +99,10 @@ class _FestivalPageState extends State<FestivalPage> {
     );
   }
 
-  _getFestivalInfo(Festival args) async {
+  _getFestivalInfo(Festival festival) async {
     String? jwt = await FlutterSecureStorage().read(key: ConstStorage.KEY_JWT);
     http.Response response = await http.get(
-      Uri.parse('${ConstStorage.BASE_URL}events/festival/${args.id}'),
+      Uri.parse('${ConstStorage.BASE_URL}events/festival/${festival.id}'),
       headers: {'Authorization': 'Bearer $jwt'},
     );
     if (response.statusCode == 200) {
@@ -128,7 +122,7 @@ class _FestivalPageState extends State<FestivalPage> {
       streamControllerEvents.sink.add(listEvents);
     } else {
       log("${response.statusCode} ${response.reasonPhrase}");
-      Navigator.pushNamed(context, "/login");
+      Navigator.pop(context);
     }
   }
 
@@ -141,8 +135,10 @@ class _FestivalPageState extends State<FestivalPage> {
             title: Text(event.name),
             subtitle: Column(
               children: [
-                Text('Du : ${DateFormat('dd/MM/yyyy - HH:mm').format(event.startDate)}'),
-                Text('Au : ${DateFormat('dd/MM/yyyy - HH:mm').format(event.endDate)}'),
+                Text(
+                    'Du : ${DateFormat('dd/MM/yyyy - HH:mm').format(event.startDate)}'),
+                Text(
+                    'Au : ${DateFormat('dd/MM/yyyy - HH:mm').format(event.endDate)}'),
               ],
               crossAxisAlignment: CrossAxisAlignment.start,
             ),
