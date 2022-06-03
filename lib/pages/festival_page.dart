@@ -12,6 +12,7 @@ import 'package:intl/intl.dart';
 
 class FestivalPage extends StatefulWidget {
   final Festival festival;
+
   const FestivalPage(this.festival, {Key? key}) : super(key: key);
 
   @override
@@ -47,7 +48,13 @@ class _FestivalPageState extends State<FestivalPage> {
                 ),
               ),
               Text(
-                  '${DateFormat('dd/MM/yyyy').format(widget.festival.startDate)} - ${DateFormat('dd/MM/yyyy').format(widget.festival.endDate)}'),
+                '${DateFormat('dd/MM/yyyy').format(widget.festival.startDate)} - ${DateFormat('dd/MM/yyyy').format(widget.festival.endDate)}',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.indigo.shade200,
+                  fontSize: 18.0,
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(25.0, 16.0, 25.0, 0.0),
                 child: Text(
@@ -62,10 +69,11 @@ class _FestivalPageState extends State<FestivalPage> {
               Padding(
                 padding: const EdgeInsets.fromLTRB(25.0, 16.0, 25.0, 0.0),
                 child: Text(
-                  'Programmation :',
+                  'Programmation',
                   style: TextStyle(
                     color: Colors.white,
-                    fontSize: 16.0,
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
                   ),
                   textAlign: TextAlign.start,
                 ),
