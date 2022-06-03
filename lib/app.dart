@@ -1,3 +1,4 @@
+import 'package:app_festival_flutter/pages/admin_page.dart';
 import 'package:app_festival_flutter/pages/festival_page.dart';
 import 'package:app_festival_flutter/pages/home_page.dart';
 import 'package:app_festival_flutter/pages/login_page.dart';
@@ -50,7 +51,8 @@ class App extends StatelessWidget {
 List<Widget> _buildScreens() {
   return [
     HomePage(),
-    LoginPage(),
+    AdminPage(),
+    // LoginPage(),
     // FestivalPage(),
   ];
 }
@@ -64,10 +66,23 @@ List<PersistentBottomNavBarItem> _navBarsItems() {
       inactiveColorPrimary: CupertinoColors.systemGrey,
     ),
     PersistentBottomNavBarItem(
-      icon: Icon(CupertinoIcons.settings),
-      title: ("Login"),
+      icon: Icon(Icons.admin_panel_settings),
+      title: ("Admin"),
       activeColorPrimary: Colors.indigo.shade400,
       inactiveColorPrimary: CupertinoColors.systemGrey,
+      routeAndNavigatorSettings: RouteAndNavigatorSettings(
+        initialRoute: '/',
+        routes: {
+          // '/home': (context) => HomePage(),
+          // '/festival': (context) => LoginPage(),
+        },
+      ),
+    ),
+    // PersistentBottomNavBarItem(
+    //   icon: Icon(CupertinoIcons.settings),
+    //   title: ("Login"),
+    //   activeColorPrimary: Colors.indigo.shade400,
+    //   inactiveColorPrimary: CupertinoColors.systemGrey,
       // routeAndNavigatorSettings: RouteAndNavigatorSettings(
       //   initialRoute: '/',
       //   routes: {
@@ -75,7 +90,7 @@ List<PersistentBottomNavBarItem> _navBarsItems() {
       //     // '/festival': (context) => LoginPage(),
       //   },
       // ),
-    ),
+    // ),
     // PersistentBottomNavBarItem(
     //   icon: Icon(CupertinoIcons.settings),
     //   title: ("Festival"),

@@ -11,6 +11,7 @@ import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 
 import '../const_storage.dart';
 import 'festival_page.dart';
+import 'login_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -59,31 +60,13 @@ class _HomePageState extends State<HomePage> {
           ]),
         ),
       ),
-      // bottomNavigationBar: BottomNavigationBar(
-      //   items: const <BottomNavigationBarItem>[
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.festival),
-      //       label: 'Festival',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.speaker_notes),
-      //       label: 'Artist',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.admin_panel_settings),
-      //       label: 'Admin',
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.account_circle),
-      //       label: 'Profile',
-      //     ),
-      //   ],
-      //   currentIndex: _selectedIndex,
-      //   selectedItemColor: Colors.indigo[200],
-      //   onTap: (value) => {
-      //     _onItemTappedOnNavBar(value),
-      //   },
-      // ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async => _getFestivals(),
+        tooltip: 'Refresh',
+        foregroundColor: Colors.white,
+        backgroundColor: Colors.indigo,
+        child: const Icon(Icons.refresh),
+      ),
     );
   }
 
@@ -96,11 +79,23 @@ class _HomePageState extends State<HomePage> {
             ).then(
               (response) => _analyzeResponseFestivals(response),
               onError: (error, stacktrace) =>
-                  log("Error response" + error.toString()),
+                  // log("Error response" + error.toString()),
+                  pushNewScreenWithRouteSettings(
+                context,
+                settings: RouteSettings(name: '/home'),
+                screen: LoginPage(),
+                withNavBar: false,
+              ),
             )
           },
           onError: (error, stacktrace) =>
-              log('Error getJWT' + error.toString()),
+              // log('Error getJWT' + error.toString()),
+              pushNewScreenWithRouteSettings(
+            context,
+            settings: RouteSettings(name: '/home'),
+            screen: LoginPage(),
+            withNavBar: false,
+          ),
         );
   }
 
@@ -113,7 +108,12 @@ class _HomePageState extends State<HomePage> {
       streamControllerFestivals.sink.add(listFestivals);
     } else {
       log("${response.statusCode} ${response.reasonPhrase}");
-      Navigator.pushNamed(context, "/login");
+      pushNewScreen(
+        context,
+        // settings: RouteSettings(name: '/home'),
+        screen: LoginPage(),
+        withNavBar: false,
+      );
     }
   }
 
@@ -155,7 +155,6 @@ class _HomePageState extends State<HomePage> {
       ),
       onTap: () => {
         log('festivalId: ${festival.id}'),
-        log('festival: ${festival}'),
         pushNewScreenWithRouteSettings(
           context,
           settings: RouteSettings(name: '/home'),

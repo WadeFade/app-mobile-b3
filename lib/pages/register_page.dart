@@ -77,7 +77,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   OutlinedButton(
-                    onPressed: () => Navigator.pushNamed(context, "/login"),
+                    onPressed: () => Navigator.of(context).pop(),
                     child: const Text('SE CONNECTER'),
                   ),
                   ElevatedButton(
@@ -99,9 +99,13 @@ class _RegisterPageState extends State<RegisterPage> {
     String email = tecEmail.text.trim();
     String password = tecPassword.text.trim();
 
-    http.Response response = await http.post(
-        Uri.parse("${ConstStorage.BASE_URL}auth/signup"),
-        body: {'firstname': firstname, 'lastname': lastname, 'email': email, 'password': password});
+    http.Response response = await http
+        .post(Uri.parse("${ConstStorage.BASE_URL}auth/signup"), body: {
+      'firstname': firstname,
+      'lastname': lastname,
+      'email': email,
+      'password': password
+    });
 
     if (response.statusCode == 200) {
       log("Register done with success ${response.statusCode}");
@@ -109,7 +113,7 @@ class _RegisterPageState extends State<RegisterPage> {
       tecLastname.clear();
       tecEmail.clear();
       tecPassword.clear();
-      Navigator.of(context).pushNamed("/login");
+      Navigator.pop(context);
     } else {
       log("Register error ${response.statusCode}");
     }
