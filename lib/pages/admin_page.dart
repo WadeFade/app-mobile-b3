@@ -15,7 +15,6 @@ class AdminPage extends StatefulWidget {
 }
 
 class _AdminPageState extends State<AdminPage> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,17 +27,43 @@ class _AdminPageState extends State<AdminPage> {
           child: Column(
             children: [
               const Spacer(),
-              ElevatedButton(
-                onPressed: () => {},
-                child: const Text('Festivals'),
+              SizedBox(
+                width: 150.0,
+                height: 50.0,
+                child: ElevatedButton(
+                  onPressed: () => {},
+                  child: const Text('Festivals'),
+                ),
               ),
-              ElevatedButton(
-                onPressed: () => {},
-                child: const Text('Évènements'),
+              Container(
+                margin: const EdgeInsets.fromLTRB(0.0, 10.0, 0.0, 10.0),
+                child: SizedBox(
+                  width: 150.0,
+                  height: 50.0,
+                  child: ElevatedButton(
+                    onPressed: () => {},
+                    child: const Text('Évènements'),
+                  ),
+                ),
               ),
-              ElevatedButton(
-                onPressed: () => {},
-                child: const Text('Artistes'),
+              Container(
+                margin: const EdgeInsets.only(bottom: 10.0),
+                child: SizedBox(
+                  width: 150.0,
+                  height: 50.0,
+                  child: ElevatedButton(
+                    onPressed: () => {},
+                    child: const Text('Fiches'),
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: 150.0,
+                height: 50.0,
+                child: ElevatedButton(
+                  onPressed: () => {},
+                  child: const Text('Utilisateurs'),
+                ),
               ),
               const Spacer(),
             ],
@@ -47,5 +72,4 @@ class _AdminPageState extends State<AdminPage> {
       ),
     );
   }
-
 }
