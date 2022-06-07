@@ -1,4 +1,5 @@
 import 'package:app_festival_flutter/app.dart';
+import 'package:app_festival_flutter/pages/admin_page.dart';
 import 'package:app_festival_flutter/pages/festival_page.dart';
 import 'package:app_festival_flutter/pages/home_page.dart';
 import 'package:app_festival_flutter/pages/login_page.dart';
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
         '/home': (context) => HomePage(),
         '/register': (context) => RegisterPage(),
         '/login': (context) => LoginPage(),
+        '/admin': (context) => AdminPage(),
         // '/festival': (context) => FestivalPage(),
       },
     );
