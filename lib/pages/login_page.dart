@@ -2,10 +2,14 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:app_festival_flutter/const_storage.dart';
+import 'package:app_festival_flutter/pages/register_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
+
+import 'home_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -20,56 +24,64 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Connexion'),
-        // actions: [
-        //   IconButton(
-        //     onPressed: () => Navigator.of(context).pushNamed("/home"),
-        //     icon: const Icon(Icons.home),
-        //   ),
-        // ],
-      ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(25.0),
-          child: Column(
-            children: [
-              // const Spacer(),
-              // Image.asset('assets/icon/icon.png',
-              //     width: 100, height: 100, color: Colors.white),
-              const Spacer(),
-              TextFormField(
-                controller: tecEmail,
-                decoration: const InputDecoration(
-                  hintText: 'Email',
-                  prefixIcon: Icon(Icons.person),
-                ),
-              ),
-              TextFormField(
-                controller: tecPassword,
-                obscureText: true,
-                decoration: const InputDecoration(
-                  hintText: 'Mot de passe',
-                  prefixIcon: Icon(Icons.password),
-                ),
-              ),
-              const Spacer(),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  OutlinedButton(
-                    onPressed: () =>
-                        Navigator.of(context).pushNamed("/register"),
-                    child: const Text('S\'INSCRIRE'),
+    return WillPopScope(
+      onWillPop: () async => false,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Connexion'),
+          automaticallyImplyLeading: false,
+          // actions: [
+          //   IconButton(
+          //     onPressed: () => Navigator.of(context).pushNamed("/home"),
+          //     icon: const Icon(Icons.home),
+          //   ),
+          // ],
+        ),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(25.0),
+            child: Column(
+              children: [
+                // const Spacer(),
+                // Image.asset('assets/icon/icon.png',
+                //     width: 100, height: 100, color: Colors.white),
+                const Spacer(),
+                TextFormField(
+                  controller: tecEmail,
+                  decoration: const InputDecoration(
+                    hintText: 'Email',
+                    prefixIcon: Icon(Icons.person),
                   ),
-                  ElevatedButton(
-                    onPressed: _login,
-                    child: const Text('SE CONNECTER'),
+                ),
+                TextFormField(
+                  controller: tecPassword,
+                  obscureText: true,
+                  decoration: const InputDecoration(
+                    hintText: 'Mot de passe',
+                    prefixIcon: Icon(Icons.password),
                   ),
-                ],
-              ),
-            ],
+                ),
+                const Spacer(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    OutlinedButton(
+                      onPressed: () => pushNewScreenWithRouteSettings(
+                        context,
+                        settings: RouteSettings(name: '/login'),
+                        screen: RegisterPage(),
+                        withNavBar: false, // OPTIONAL VALUE. True by default.
+                      ),
+                      child: const Text('S\'INSCRIRE'),
+                    ),
+                    ElevatedButton(
+                      onPressed: _login,
+                      child: const Text('SE CONNECTER'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -91,8 +103,14 @@ class _LoginPageState extends State<LoginPage> {
       String jwt = jsonDecode(response.body)["accessToken"];
       const FlutterSecureStorage()
           .write(key: ConstStorage.KEY_JWT, value: jwt)
-          .then((value) => Navigator.of(context).pushNamed("/home"),
-          onError: (_, var1) => log("Impossible d'écrire le token JWT."));
+          .then(
+              (value) => pushNewScreen(
+                context,
+                screen: HomePage(),
+                withNavBar: true, // OPTIONAL VALUE. True by default.
+                pageTransitionAnimation: PageTransitionAnimation.cupertino,
+              ),
+              onError: (_, var1) => log("Impossible d'écrire le token JWT."));
     } else {
       log("Error : ${response.statusCode} : ${response.body}");
     }

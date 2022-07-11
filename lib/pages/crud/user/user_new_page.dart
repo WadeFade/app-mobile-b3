@@ -2,21 +2,19 @@ import 'dart:developer';
 
 import 'package:app_festival_flutter/const_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
 
-import 'login_page.dart';
-
-class RegisterPage extends StatefulWidget {
-  const RegisterPage({Key? key}) : super(key: key);
+class UserNewPage extends StatefulWidget {
+  const UserNewPage({Key? key}) : super(key: key);
 
   @override
-  _RegisterPageState createState() => _RegisterPageState();
+  _UserNewPageState createState() => _UserNewPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _UserNewPageState extends State<UserNewPage> {
   //Controller text
+  TextEditingController tecPseudo = TextEditingController();
   TextEditingController tecFirstname = TextEditingController();
   TextEditingController tecLastname = TextEditingController();
   TextEditingController tecEmail = TextEditingController();
@@ -26,7 +24,7 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('S\'inscrire'),
+        title: const Text('Admin User (Ajout)'),
         // actions: [
         //   IconButton(
         //     onPressed: () => Navigator.of(context).pushNamed("/home"),
@@ -39,37 +37,36 @@ class _RegisterPageState extends State<RegisterPage> {
           padding: const EdgeInsets.all(25.0),
           child: Column(
             children: [
-              // const Spacer(),
-              // Image.asset('assets/image/loupp.png',
-              //     width: 100, height: 100, color: Colors.white),
               const Spacer(),
+              TextFormField(
+                controller: tecPseudo,
+                decoration: const InputDecoration(
+                  hintText: 'Pseudo',
+                ),
+              ),
               TextFormField(
                 controller: tecFirstname,
                 decoration: const InputDecoration(
                   hintText: 'Prénom',
-                  prefixIcon: Icon(Icons.person),
                 ),
               ),
               TextFormField(
                 controller: tecLastname,
                 decoration: const InputDecoration(
                   hintText: 'Nom',
-                  prefixIcon: Icon(Icons.person),
                 ),
               ),
               TextFormField(
                 controller: tecEmail,
                 decoration: const InputDecoration(
                   hintText: 'Email',
-                  prefixIcon: Icon(Icons.email),
                 ),
               ),
               TextFormField(
                 controller: tecPassword,
                 obscureText: true,
                 decoration: const InputDecoration(
-                  hintText: 'Mot de passe',
-                  prefixIcon: Icon(Icons.password),
+                  hintText: '*******',
                 ),
               ),
               const Spacer(),
@@ -77,12 +74,12 @@ class _RegisterPageState extends State<RegisterPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   OutlinedButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: const Text('SE CONNECTER'),
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('ANNULER'),
                   ),
                   ElevatedButton(
-                    onPressed: _register,
-                    child: const Text('S\'INSCRIRE'),
+                    onPressed: _postUsers,
+                    child: const Text('AJOUTER'),
                   ),
                 ],
               ),
@@ -93,29 +90,45 @@ class _RegisterPageState extends State<RegisterPage> {
     );
   }
 
-  _register() async {
+  _postUsers() async {
+    String pseudo = tecPseudo.text.trim();
     String firstname = tecFirstname.text.trim();
     String lastname = tecLastname.text.trim();
     String email = tecEmail.text.trim();
     String password = tecPassword.text.trim();
-
-    http.Response response = await http
-        .post(Uri.parse("${ConstStorage.BASE_URL}auth/signup"), body: {
-      'firstname': firstname,
-      'lastname': lastname,
-      'email': email,
-      'password': password
-    });
-
-    if (response.statusCode == 200) {
-      log("Register done with success ${response.statusCode}");
-      tecFirstname.clear();
-      tecLastname.clear();
-      tecEmail.clear();
-      tecPassword.clear();
-      Navigator.pop(context);
-    } else {
-      log("Register error ${response.statusCode}");
-    }
+    const FlutterSecureStorage().read(key: ConstStorage.KEY_JWT).then(
+          (jwt) => {
+        http.post(
+          Uri.parse("${ConstStorage.BASE_URL}users"),
+          headers: {'Authorization': 'Bearer $jwt'},
+          body: {
+            'pseudo': pseudo,
+            'firstname': firstname,
+            'lastname': lastname,
+            'email': email,
+            'password': password,
+          },
+        ).then(
+              (response) => {
+            if (response.statusCode == 200)
+              {
+                log("User created ${response.statusCode}"),
+                tecPseudo.clear(),
+                tecFirstname.clear(),
+                tecLastname.clear(),
+                tecEmail.clear(),
+              }
+            else
+              {
+                log("${response.statusCode} : ${response.reasonPhrase}"),
+              }
+          },
+          onError: (error, stacktrace) =>
+              log("Error response" + error.toString()),
+        ),
+      },
+      onError: (error, stacktrace) =>
+          log('Error getJWT' + error.toString()),
+    );
   }
 }

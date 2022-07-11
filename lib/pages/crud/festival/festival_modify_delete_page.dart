@@ -10,60 +10,68 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
-class FestivalPage extends StatefulWidget {
+class FestivalDeletePage extends StatefulWidget {
   final Festival festival;
 
-  const FestivalPage(this.festival, {Key? key}) : super(key: key);
+  const FestivalDeletePage(this.festival, {Key? key}) : super(key: key);
 
   @override
-  _FestivalPageState createState() => _FestivalPageState();
+  _FestivalDeletePageState createState() => _FestivalDeletePageState();
 }
 
-class _FestivalPageState extends State<FestivalPage> {
+class _FestivalDeletePageState extends State<FestivalDeletePage> {
   StreamController<List<Event>> streamControllerEvents = StreamController();
+  TextEditingController tecName = TextEditingController();
+  TextEditingController tecStartDate = TextEditingController();
+  TextEditingController tecEndDate = TextEditingController();
+  TextEditingController tecDescription = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _getFestivalInfo(widget.festival);
+    tecName.text = widget.festival.name;
+    tecStartDate.text =
+        DateFormat('yyyy-MM-dd').format(widget.festival.startDate);
+    tecEndDate.text = DateFormat('yyyy-MM-dd').format(widget.festival.endDate);
+    tecDescription.text = widget.festival.description;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(title: const Text('Admin Festival (Modify/Delete)')),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(25.0),
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(25.0),
-                child: Text(
-                  "${widget.festival.name}",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 36,
-                  ),
+              TextFormField(
+                controller: tecName,
+                decoration: const InputDecoration(
+                  label: Text('Nom festival'),
+                  hintText: 'Nom',
                 ),
               ),
-              Text(
-                '${DateFormat('dd/MM/yyyy').format(widget.festival.startDate)} - ${DateFormat('dd/MM/yyyy').format(widget.festival.endDate)}',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.indigo.shade200,
-                  fontSize: 18.0,
+              TextFormField(
+                controller: tecStartDate,
+                decoration: const InputDecoration(
+                  label: Text('Date début'),
+                  hintText: 'yyyy-MM-dd',
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(25.0, 16.0, 25.0, 0.0),
-                child: Text(
-                  "${widget.festival.description}",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 16.0,
-                  ),
-                  textAlign: TextAlign.start,
+              TextFormField(
+                controller: tecEndDate,
+                decoration: const InputDecoration(
+                  label: Text('Date fin'),
+                  hintText: 'yyyy-MM-dd',
+                ),
+              ),
+              TextFormField(
+                controller: tecDescription,
+                decoration: const InputDecoration(
+                  label: Text('Description'),
+                  hintText: 'Description...',
                 ),
               ),
               Padding(
@@ -100,6 +108,25 @@ class _FestivalPageState extends State<FestivalPage> {
                     }),
               ),
               // Spacer(),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                    onPressed: () async => _deleteFestival(widget.festival),
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(Colors.red),
+                    ),
+                    child: const Text('Supprimer'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () async => _modifyFestival(widget.festival),
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.all<Color>(Colors.indigo),
+                    ),
+                    child: const Text('Modifier'),
+                  ),
+                ],
+              ),
             ],
           ),
         ),
@@ -161,5 +188,45 @@ class _FestivalPageState extends State<FestivalPage> {
         ],
       ),
     );
+  }
+
+  _deleteFestival(Festival festival) async {
+    String? jwt = await FlutterSecureStorage().read(key: ConstStorage.KEY_JWT);
+    http.Response response = await http.delete(
+      Uri.parse('${ConstStorage.BASE_URL}festivals/${festival.id}'),
+      headers: {'Authorization': 'Bearer $jwt'},
+    );
+    if (response.statusCode == 200) {
+      log("ok: deleted");
+      Navigator.pop(context);
+    } else {
+      log("Error ${response.statusCode} ${response.body}");
+      Navigator.pop(context);
+    }
+  }
+
+  _modifyFestival(Festival festival) async {
+    String name = tecName.text.trim();
+    String description = tecDescription.text.trim();
+    String startDate = tecStartDate.text.trim();
+    String endDate = tecEndDate.text.trim();
+    String? jwt = await FlutterSecureStorage().read(key: ConstStorage.KEY_JWT);
+    http.Response response = await http.put(
+      Uri.parse('${ConstStorage.BASE_URL}festivals/${festival.id}'),
+      headers: {'Authorization': 'Bearer $jwt'},
+      body: {
+        'name': name,
+        'description': description,
+        'startDate': startDate,
+        'endDate': endDate,
+      },
+    );
+    if (response.statusCode == 200) {
+      log("ok: modified");
+      Navigator.pop(context);
+    } else {
+      log("Error ${response.statusCode} ${response.body}");
+      Navigator.pop(context);
+    }
   }
 }

@@ -1,26 +1,26 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-
 import 'package:app_festival_flutter/models/festival.dart';
+import 'package:app_festival_flutter/pages/crud/festival/festival_new_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:persistent_bottom_nav_bar_v2/persistent-tab-view.dart';
+import '../../../const_storage.dart';
+import '../../festival_page.dart';
+import '../../login_page.dart';
+import 'festival_modify_delete_page.dart';
 
-import '../const_storage.dart';
-import 'festival_page.dart';
-import 'login_page.dart';
-
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class FestivalViewPage extends StatefulWidget {
+  const FestivalViewPage({Key? key}) : super(key: key);
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _FestivalViewPageState createState() => _FestivalViewPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _FestivalViewPageState extends State<FestivalViewPage> {
   StreamController<List<Festival>> streamControllerFestivals =
       StreamController();
 
@@ -33,7 +33,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(title: const Text('Festivals')),
+      appBar: AppBar(title: const Text('Admin Festivals')),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(10.0),
@@ -60,12 +60,39 @@ class _HomePageState extends State<HomePage> {
           ]),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async => _getFestivals(),
-        tooltip: 'Refresh',
-        foregroundColor: Colors.white,
-        backgroundColor: Colors.indigo,
-        child: const Icon(Icons.refresh),
+      floatingActionButton: Stack(
+        children: <Widget>[
+          Align(
+            alignment: Alignment.bottomRight,
+            heightFactor: 13.0,
+            child: FloatingActionButton(
+              heroTag: 'refresh',
+              onPressed: () async => _getFestivals(),
+              tooltip: 'Refresh',
+              foregroundColor: Colors.white,
+              backgroundColor: Colors.indigo,
+              child: const Icon(Icons.refresh),
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: FloatingActionButton(
+              heroTag: 'add',
+              onPressed: () => {
+                pushNewScreenWithRouteSettings(
+                  context,
+                  settings: RouteSettings(name: '/festival-view'),
+                  screen: FestivalNewPage(),
+                  withNavBar: false,
+                ),
+              },
+              tooltip: 'Add',
+              foregroundColor: Colors.white,
+              backgroundColor: Colors.green,
+              child: const Icon(Icons.add),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -143,13 +170,6 @@ class _HomePageState extends State<HomePage> {
                 style: TextStyle(color: Colors.indigo[200]),
               ),
             ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(0, 0, 0, 8.0),
-              child: Text(
-                '(Cliquez pour voir la programmation)',
-                style: TextStyle(color: Colors.white70),
-              ),
-            ),
           ],
         ),
       ),
@@ -157,8 +177,8 @@ class _HomePageState extends State<HomePage> {
         log('festivalId: ${festival.id}'),
         pushNewScreenWithRouteSettings(
           context,
-          settings: RouteSettings(name: '/home'),
-          screen: FestivalPage(festival),
+          settings: RouteSettings(name: '/festival-view'),
+          screen: FestivalDeletePage(festival),
           withNavBar: true,
         ),
       },
