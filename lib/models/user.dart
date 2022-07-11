@@ -7,18 +7,18 @@ class User {
   String lastname;
   String pseudo;
   String email;
-  Fiche? fiche;
+  // Fiche? fiche;
 
 
-  User(this.id, this.firstname, this.lastname, this.pseudo, this.email, this.fiche);
+  User(this.id, this.firstname, this.lastname, this.pseudo, this.email);
 
   User.fromJson(Map<String, dynamic> json)
       : id = json['id'],
         firstname = json['firstname'],
         lastname = json['lastname'],
         pseudo = json['pseudo'],
-        email = json['email'],
-        fiche = Fiche.fromJson(json['email']);
+        email = json['email'];
+        // fiche = Fiche.fromJson(json['fiche']);
 
   Map<String, dynamic> toJson() => {
     'id': id,

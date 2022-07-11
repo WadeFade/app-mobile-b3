@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:app_festival_flutter/pages/crud/festival/festival_view_page.dart';
+import 'package:app_festival_flutter/pages/crud/user/user_view_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
@@ -66,7 +67,12 @@ class _AdminPageState extends State<AdminPage> {
                 width: 150.0,
                 height: 50.0,
                 child: ElevatedButton(
-                  onPressed: () => {},
+                  onPressed: () => pushNewScreenWithRouteSettings(
+                  context,
+                  settings: RouteSettings(name: '/admin'),
+                  screen: UserViewPage(),
+                  withNavBar: true, // OPTIONAL VALUE. True by default.
+                ),
                   child: const Text('Utilisateurs'),
                 ),
               ),

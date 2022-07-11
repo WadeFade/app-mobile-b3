@@ -114,19 +114,19 @@ class _UserDeletePageState extends State<UserDeletePage> {
   }
 
   _modifyUser(User user) async {
-    String name = tecName.text.trim();
-    String description = tecDescription.text.trim();
-    String startDate = tecStartDate.text.trim();
-    String endDate = tecEndDate.text.trim();
+    String pseudo = tecPseudo.text.trim();
+    String firstname = tecFirstname.text.trim();
+    String lastname = tecLastname.text.trim();
+    String email = tecEmail.text.trim();
     String? jwt = await FlutterSecureStorage().read(key: ConstStorage.KEY_JWT);
     http.Response response = await http.put(
       Uri.parse('${ConstStorage.BASE_URL}users/${user.id}'),
       headers: {'Authorization': 'Bearer $jwt'},
       body: {
-        'name': name,
-        'description': description,
-        'startDate': startDate,
-        'endDate': endDate,
+        'pseudo': pseudo,
+        'firstname': firstname,
+        'lastname': lastname,
+        'email': email,
       },
     );
     if (response.statusCode == 200) {
